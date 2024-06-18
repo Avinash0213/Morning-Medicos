@@ -12,6 +12,7 @@ const VideoList = () => {
   const [videos, setVideos] = useState([]);
   const [shorts, setShorts] = useState([]);
   const [nextPageToken, setNextPageToken] = useState('');
+  const [toggleVideosAndShorts, setToggleVideosAndShorts] = useState(true);
 
   const fetchVideos = async (pageToken = '') => {
     try {
@@ -22,6 +23,7 @@ const VideoList = () => {
           key: API_KEY,
         },
       });
+      console.log(channelResponse.data.items[0].contentDetails.relatedPlaylists.uploads)
 
       const uploadsPlaylistId = channelResponse.data.items[0].contentDetails.relatedPlaylists.uploads;
 
@@ -62,7 +64,12 @@ const VideoList = () => {
 
   return (
     <div>
-      <h1>Video List</h1>
+      <h3>Welcome to Morning Medicos</h3>
+      <button onClick={() => setToggleVideosAndShorts(!toggleVideosAndShorts)}>
+        {toggleVideosAndShorts ? 'Show Shorts' : 'Show Regular Videos'}
+      </button>
+     {toggleVideosAndShorts &&
+     <div>
       <h2>Regular Videos</h2>
       <ul className="video-list">
         {videos.map((video) => (
@@ -82,8 +89,12 @@ const VideoList = () => {
           </li>
         ))}
       </ul>
-      
-      <h2>Shorts</h2>
+      </div>
+}
+     {
+      !toggleVideosAndShorts && 
+      <div>
+        <h2>Shorts</h2>
       <ul className="video-list">
         {shorts.map((video) => (
           <li key={video.snippet.resourceId.videoId} className="video-item">
@@ -102,7 +113,10 @@ const VideoList = () => {
           </li>
         ))}
       </ul>
-      
+      </div>
+
+     } 
+          
       {nextPageToken && (
         <button onClick={loadMoreVideos}>Load More Videos</button>
       )}
