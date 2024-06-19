@@ -1,37 +1,119 @@
-/* src/App.css */
-.video-list {
+.video-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.video-list-wrapper {
   display: flex;
-  flex-direction: column;
-  list-style-type: none;
-  padding: 50px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.video-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .video-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
+  flex: 1 0 300px; /* Each video item should take up to 300px width, and grow if space allows */
+  max-width: 100%;
+  text-align: center;
 }
 
 .video-thumbnail {
-  width: 120px;
-  height: 90px;
-  margin-right: 10px;
+  width: 100%; /* Ensure the image takes up 100% of its container's width */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 100%; /* Ensure the image does not exceed its natural width */
+  max-height: 180px; /* Set a maximum height for consistency */
+  object-fit: cover; /* Ensure the image covers the entire thumbnail area */
+  border-radius: 8px; /* Add some border radius for a nicer look */
 }
 
-.video-item a {
+.video-title {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px; /* Adjust font size as needed */
+}
+
+.load-more-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .video-item {
+    flex-basis: 100%; /* On smaller screens, each video item takes up full width */
+  }
+}
+
+.styled-link {
+      text-decoration: none;
+      font-weight: bold;
+      text-transform: uppercase;
+}
+a {
   text-decoration: none;
-  color: black;
-  display: flex;
-  align-items: center;
 }
 
-.video-item a:hover {
-  text-decoration: underline;
+/* CSS for the slider toggle button */
+.toggle-button {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
 }
 
-.app{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.toggle-button input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider-label {
+  margin-left: 10px;
+  font-size: 16px;
+  vertical-align: middle;
 }

@@ -1,12 +1,8 @@
-
-// src/components/VideoList.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const API_KEY = 'AIzaSyARv-5r9V0Twt_sFhV7UlDY_fxJuWMxTrA'; // Replace with your API key
 const CHANNEL_ID = 'UCT37z9xiMyJ9qCV-hXHIFxw'; // Replace with your Channel ID
-// const API_KEY = 'YOUR_API_KEY'; // Replace with your API key
-// const CHANNEL_ID = 'YOUR_CHANNEL_ID'; // Replace with your Channel ID
 
 const VideoList = () => {
   const [videos, setVideos] = useState([]);
@@ -23,7 +19,6 @@ const VideoList = () => {
           key: API_KEY,
         },
       });
-      console.log(channelResponse.data.items[0].contentDetails.relatedPlaylists.uploads)
 
       const uploadsPlaylistId = channelResponse.data.items[0].contentDetails.relatedPlaylists.uploads;
 
@@ -43,12 +38,19 @@ const VideoList = () => {
       const shortsVideos = fetchedVideos.filter(video => video.snippet.thumbnails.hasOwnProperty('maxres'));
 
       setVideos((prevVideos) => [...prevVideos, ...regularVideos]);
+      console.log(shortsVideos)
       setShorts((prevShorts) => [...prevShorts, ...shortsVideos]);
       setNextPageToken(playlistResponse.data.nextPageToken || '');
     } catch (error) {
       console.error('Error fetching videos:', error);
     }
   };
+  const removeTextAfterHash = (text) => {
+  const hashIndex = text.indexOf('#');
+  return hashIndex !== -1 ? text.substring(0, hashIndex) : text;
+};
+
+  
 
   useEffect(() => {
     if (CHANNEL_ID) {
@@ -63,62 +65,75 @@ const VideoList = () => {
   };
 
   return (
-    <div>
+    <div className="video-list-container">
       <h3>Welcome to Morning Medicos</h3>
-      <button onClick={() => setToggleVideosAndShorts(!toggleVideosAndShorts)}>
+      {/* <button onClick={() => setToggleVideosAndShorts(!toggleVideosAndShorts)}>
         {toggleVideosAndShorts ? 'Show Shorts' : 'Show Regular Videos'}
-      </button>
-     {toggleVideosAndShorts &&
-     <div>
-      <h2>Regular Videos</h2>
-      <ul className="video-list">
-        {videos.map((video) => (
-          <li key={video.snippet.resourceId.videoId} className="video-item">
-            <a
-              href={`https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src={video.snippet.thumbnails.default.url}
-                alt={video.snippet.title}
-                className="video-thumbnail"
-              />
-              <span>{video.snippet.title}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-      </div>
-}
-     {
-      !toggleVideosAndShorts && 
-      <div>
-        <h2>Shorts</h2>
-      <ul className="video-list">
-        {shorts.map((video) => (
-          <li key={video.snippet.resourceId.videoId} className="video-item">
-            <a
-              href={`https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src={video.snippet.thumbnails.default.url}
-                alt={video.snippet.title}
-                className="video-thumbnail"
-              />
-              <span>{video.snippet.title}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      </button> */}
+      <label className="toggle-button">
+        <input 
+          type="checkbox" 
+          checked={toggleVideosAndShorts} 
+          onChange={() => setToggleVideosAndShorts(!toggleVideosAndShorts)} 
+        />
+        <span className="slider"></span>
+      </label>
+      <span className="slider-label">
+        {toggleVideosAndShorts ? 'Show Shorts' : 'Show Regular Videos'}
+      </span>
+
+      <div className="video-list-wrapper">
+        {toggleVideosAndShorts ? (
+          <>
+            <h2>Regular Videos</h2>
+            <ul className="video-list">
+              {videos.map((video, index) => (
+                <li key={video.snippet.resourceId.videoId + index} className="video-item">
+                  <a
+                    href={`https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={video.snippet.thumbnails.high.url}
+                      alt={video.snippet.title}
+                      className="video-thumbnail"
+                    />
+                    <span className="video-title styled-link">{removeTextAfterHash(video.snippet.title)}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <>
+            <h2>Shorts</h2>
+            <ul className="video-list">
+              {shorts.map((video, index) => (
+                <li key={video.snippet.resourceId.videoId + index} className="video-item">
+                  <a
+                    href={`https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={video.snippet.thumbnails.high.url}
+                      alt={video.snippet.title}
+                      className="video-thumbnail"
+                    />
+                    <span className="video-title styled-link">{removeTextAfterHash(video.snippet.title)}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
 
-     } 
-          
       {nextPageToken && (
-        <button onClick={loadMoreVideos}>Load More Videos</button>
+        <button onClick={loadMoreVideos} className="load-more-button">
+          Load More Videos
+        </button>
       )}
     </div>
   );
